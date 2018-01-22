@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.TrainingSetting = new System.Windows.Forms.GroupBox();
             this.btn_Stop = new System.Windows.Forms.Button();
             this.btn_Train = new System.Windows.Forms.Button();
@@ -53,9 +54,17 @@
             this.pBar_TrainAccuracy = new System.Windows.Forms.ProgressBar();
             this.lbl_Test = new System.Windows.Forms.Label();
             this.lbl_Train = new System.Windows.Forms.Label();
+            this.imgBox_Paint = new Emgu.CV.UI.ImageBox();
+            this.gBox_Paint = new System.Windows.Forms.GroupBox();
+            this.btn_Clear = new System.Windows.Forms.Button();
+            this.btn_Enter = new System.Windows.Forms.Button();
+            this.lbl_Prediction = new System.Windows.Forms.Label();
+            this.txt_Prediction = new System.Windows.Forms.TextBox();
             this.TrainingSetting.SuspendLayout();
             this.gbox_Message.SuspendLayout();
             this.gbox_accuracy.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBox_Paint)).BeginInit();
+            this.gBox_Paint.SuspendLayout();
             this.SuspendLayout();
             // 
             // TrainingSetting
@@ -310,11 +319,78 @@
             this.lbl_Train.TabIndex = 6;
             this.lbl_Train.Text = "Train";
             // 
+            // imgBox_Paint
+            // 
+            this.imgBox_Paint.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.imgBox_Paint.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.RightClickMenu;
+            this.imgBox_Paint.Location = new System.Drawing.Point(18, 24);
+            this.imgBox_Paint.Name = "imgBox_Paint";
+            this.imgBox_Paint.Size = new System.Drawing.Size(250, 250);
+            this.imgBox_Paint.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.imgBox_Paint.TabIndex = 2;
+            this.imgBox_Paint.TabStop = false;
+            this.imgBox_Paint.MouseDown += new System.Windows.Forms.MouseEventHandler(this.imgBox_MouseDown);
+            this.imgBox_Paint.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imgBox_MouseMove);
+            this.imgBox_Paint.MouseUp += new System.Windows.Forms.MouseEventHandler(this.imgBox_MouseUp);
+            // 
+            // gBox_Paint
+            // 
+            this.gBox_Paint.Controls.Add(this.txt_Prediction);
+            this.gBox_Paint.Controls.Add(this.lbl_Prediction);
+            this.gBox_Paint.Controls.Add(this.btn_Enter);
+            this.gBox_Paint.Controls.Add(this.btn_Clear);
+            this.gBox_Paint.Controls.Add(this.imgBox_Paint);
+            this.gBox_Paint.Location = new System.Drawing.Point(13, 231);
+            this.gBox_Paint.Name = "gBox_Paint";
+            this.gBox_Paint.Size = new System.Drawing.Size(411, 291);
+            this.gBox_Paint.TabIndex = 3;
+            this.gBox_Paint.TabStop = false;
+            this.gBox_Paint.Text = "Paint";
+            // 
+            // btn_Clear
+            // 
+            this.btn_Clear.Location = new System.Drawing.Point(288, 241);
+            this.btn_Clear.Name = "btn_Clear";
+            this.btn_Clear.Size = new System.Drawing.Size(105, 31);
+            this.btn_Clear.TabIndex = 3;
+            this.btn_Clear.Text = "Clear";
+            this.btn_Clear.UseVisualStyleBackColor = true;
+            this.btn_Clear.Click += new System.EventHandler(this.btn_Clear_Click);
+            // 
+            // btn_Enter
+            // 
+            this.btn_Enter.Location = new System.Drawing.Point(288, 203);
+            this.btn_Enter.Name = "btn_Enter";
+            this.btn_Enter.Size = new System.Drawing.Size(105, 32);
+            this.btn_Enter.TabIndex = 4;
+            this.btn_Enter.Text = "Enter";
+            this.btn_Enter.UseVisualStyleBackColor = true;
+            this.btn_Enter.Click += new System.EventHandler(this.btn_Enter_Click);
+            // 
+            // lbl_Prediction
+            // 
+            this.lbl_Prediction.AutoSize = true;
+            this.lbl_Prediction.Font = new System.Drawing.Font("新細明體", 9F);
+            this.lbl_Prediction.Location = new System.Drawing.Point(285, 29);
+            this.lbl_Prediction.Name = "lbl_Prediction";
+            this.lbl_Prediction.Size = new System.Drawing.Size(65, 15);
+            this.lbl_Prediction.TabIndex = 12;
+            this.lbl_Prediction.Text = "Prediction";
+            // 
+            // txt_Prediction
+            // 
+            this.txt_Prediction.Location = new System.Drawing.Point(356, 24);
+            this.txt_Prediction.Name = "txt_Prediction";
+            this.txt_Prediction.ReadOnly = true;
+            this.txt_Prediction.Size = new System.Drawing.Size(37, 25);
+            this.txt_Prediction.TabIndex = 13;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(782, 553);
+            this.ClientSize = new System.Drawing.Size(782, 535);
+            this.Controls.Add(this.gBox_Paint);
             this.Controls.Add(this.gbox_accuracy);
             this.Controls.Add(this.gbox_Message);
             this.Controls.Add(this.TrainingSetting);
@@ -326,6 +402,9 @@
             this.gbox_Message.PerformLayout();
             this.gbox_accuracy.ResumeLayout(false);
             this.gbox_accuracy.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBox_Paint)).EndInit();
+            this.gBox_Paint.ResumeLayout(false);
+            this.gBox_Paint.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -357,6 +436,12 @@
         private System.Windows.Forms.Label lbl_OperationTime;
         private System.Windows.Forms.Label lbl_TestAccuracy;
         private System.Windows.Forms.Label lbl_TrainAccuracy;
+        private Emgu.CV.UI.ImageBox imgBox_Paint;
+        private System.Windows.Forms.GroupBox gBox_Paint;
+        private System.Windows.Forms.Button btn_Clear;
+        private System.Windows.Forms.TextBox txt_Prediction;
+        private System.Windows.Forms.Label lbl_Prediction;
+        private System.Windows.Forms.Button btn_Enter;
     }
 }
 

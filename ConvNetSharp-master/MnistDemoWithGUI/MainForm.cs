@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+//using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +11,14 @@ using ConvNetSharp.Core;
 using ConvNetSharp.Core.Layers.Double;
 using ConvNetSharp.Core.Training;
 using ConvNetSharp.Volume;
+using ConvNetSharp.Volume.Double;
 using System.Threading;
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.Util;
+using Emgu.CV.UI;
+using System.Drawing;
 
 namespace MnistDemoWithGUI
 {
@@ -29,6 +36,12 @@ namespace MnistDemoWithGUI
         private int _time = 0;
         private int _step = 0;
 
+        // Paint
+        private Image<Gray, Byte> _paint = new Image<Gray, Byte>(250, 250, new Gray(0));
+        private int _mouse_X, _mouse_Y;
+        private int _pre_mouse_X, _pre_mouse_Y;
+        private bool isMouseDown = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -37,6 +50,9 @@ namespace MnistDemoWithGUI
             CountTimer.Tick += new EventHandler(TimerTick);
             CountTimer.Stop(); // 確保程式執行時 Timer 是停止狀態
             CreateMnistNet(); // 程式開始執行即創建網路
+
+            _paint = _paint.Resize(250, 250, Inter.Linear, true);
+            imgBox_Paint.Image = _paint;
         }
 
         private void ShowStatus(string str)
@@ -171,6 +187,78 @@ namespace MnistDemoWithGUI
         {
             ShowStatus(" Stopping ...");
             _train_engine_ct.Cancel();
+        }
+
+        // Painting Method
+        private void imgBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Left)
+            {
+                this.isMouseDown = true;
+                _pre_mouse_X = _mouse_X = e.X;
+                _pre_mouse_Y = _mouse_Y = e.Y;
+                
+            }
+        }
+
+        private void btn_Clear_Click(object sender, EventArgs e)
+        {
+            this._paint = new Image<Gray, byte>(250, 250, new Gray(0));
+            imgBox_Paint.Image = this._paint;
+        }
+
+        private void btn_Enter_Click(object sender, EventArgs e)
+        {
+            int w = 28;
+            int h = 28;
+            // 創建 Volume 物件 (Forward需要)
+            var dataShape = new Shape(w, h, 1, 1); // Shape(width, height, channel, batchSize)
+            var data = new double[dataShape.TotalLength];
+            var dataVolume = BuilderInstance.Volume.From(data, dataShape);
+
+            _paint = this._paint.Resize(28, 28, Inter.Linear);
+
+            // 創建 MnistEntry 物件, 用來設定 dataVolume
+            var entry = new MnistEntry();
+            entry.Image = _paint.Bytes;
+
+            for(int y = 0;y< h; y++)
+            {
+                for(int x=0;x< w; x++)
+                {
+                    dataVolume.Set(x, y, 0, 0, entry.Image[y * w + x] / 255.0);
+                }
+            }
+
+            this._net.Forward(dataVolume);
+            var result = this._net.GetPrediction();
+
+            txt_Prediction.Text = " " + result[0].ToString();
+        }
+
+        private void imgBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                this.isMouseDown = false;
+        }
+
+        private void imgBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                _mouse_X = e.X;
+                _mouse_Y = e.Y;
+
+                CvInvoke.Line(_paint,
+                    new Point(_pre_mouse_X, _pre_mouse_Y),
+                    new Point(_mouse_X, _mouse_Y),
+                    new MCvScalar(255),
+                    2, LineType.EightConnected, 0);
+
+                _pre_mouse_X = _mouse_X;
+                _pre_mouse_Y = _mouse_Y;
+                imgBox_Paint.Image = this._paint;
+            }
         }
     }
 }
